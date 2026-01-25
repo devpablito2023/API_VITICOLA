@@ -335,6 +335,69 @@ def generar_filtros_por_mes(meses, fecha_inicial, fecha_final):
                 filtros.append({"fecha": {"$gte": inicio_mes,"$lte": fin_mes}})
     return filtros
  
+
+async def Guardar_Datos_3(ztrack_data: Union[TunelSchema, dict]) -> str:
+    # 1) Asegurar dict
+    if isinstance(ztrack_data, TunelSchema):
+        ztrack_data = ztrack_data.model_dump()
+    elif not isinstance(ztrack_data, dict):
+        raise TypeError(f"Tipo no soportado: {type(ztrack_data)}")
+
+    # 2) Setear fecha
+    ztrack_data["fecha"] = datetime.now()
+
+    comando = "sin comandos pendientes"
+    Hay_dispositivo = ""
+
+    data_collection = collection(bd_gene(ztrack_data["i"]))
+    dispositivos_collection = collection(bd_gene("dispositivos"))
+    control_collection = collection(bd_gene("control"))
+
+    # Guardar trama
+    notificacion = await data_collection.insert_one(ztrack_data)
+
+    # (opcional) si no lo usas, puedes quitarlo para ahorrar consulta
+    # new_notificacion = await data_collection.find_one({"_id": notificacion.inserted_id}, {"_id": 0})
+
+    # Verificar dispositivo
+    dispositivo_encontrado = await dispositivos_collection.find_one(
+        {"imei": ztrack_data["i"], "estado": 1},
+        {"_id": 0}
+    )
+
+    if dispositivo_encontrado:
+        Hay_dispositivo = dispositivo_encontrado.get("imei", "")
+
+    # Upsert (evita insertar duplicados si hay carreras)
+    if Hay_dispositivo:
+        await dispositivos_collection.update_one(
+            {"imei": ztrack_data["i"], "estado": 1},
+            {"$set": {"ultimo_dato": datetime.now()}}
+        )
+    else:
+        await dispositivos_collection.insert_one(
+            {"imei": ztrack_data["i"], "estado": 1, "fecha": datetime.now(), "tipo": "TermoKing"}
+        )
+
+    # Control / comandos
+    control_encontrado = await control_collection.find_one(
+        {"imei": ztrack_data["i"], "estado": 1},
+        {"_id": 0}
+    )
+
+    if control_encontrado and control_encontrado.get("comando"):
+        comando = control_encontrado["comando"]
+
+        # Evitar negativos
+        veces_control = max(int(control_encontrado.get("estado", 1)) - 1, 0)
+
+        await control_collection.update_one(
+            {"imei": ztrack_data["i"], "estado": 1},
+            {"$set": {"estado": veces_control, "estatus": 2, "fecha_ejecucion": datetime.now()}}
+        )
+
+    return comando
+
 async def Guardar_Datos(ztrack_data: dict) -> dict:
     ztrack_data['fecha'] = datetime.now()  
     comando ="sin comandos pendientes"

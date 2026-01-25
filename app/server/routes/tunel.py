@@ -37,7 +37,6 @@ async def pre_termoking():
 async def buscar_live_ok(datos: BusquedaSchema = Body(...)):
     datos = jsonable_encoder(datos)   
     new_notificacion = await buscar_live(datos)
-    return new_notificacion
 
 
 @router.post("/comando/", response_description="Datos agregados a la base de datos.")
@@ -48,7 +47,10 @@ async def add_comando(datos: ComandoSchema = Body(...)):
 
 @router.post("/General/", response_description="Datos agregados a la base de datos.")
 async def add_data(datos: TunelSchema = Body(...)):
-    new_notificacion = await Guardar_Datos(datos)
+    #new_notificacion = await Guardar_Datos(datos)
+    new_notificacion = await Guardar_Datos(datos.model_dump())
+
+    
     return new_notificacion
 
 @router.post("/imei/", response_description="Datos agregados a la base de datos.")
