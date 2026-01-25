@@ -1,0 +1,36 @@
+
+# ... otras dependencias
+psycopg2-binary==2.9.9
+requests
+# --- CORE DE FASTAPI Y SERVIDOR ASGI ---
+fastapi==0.111.0
+uvicorn[standard]==0.30.1  # Incluye extras como uvloop para mayor rendimiento
+cdc
+# --- DRIVERS DE BASE DE DATOS ASÍNCRONOS ---
+asyncpg==0.29.0           # Driver de alto rendimiento para PostgreSQL
+motor==3.7.0              # Driver oficial asíncrono para MongoDB
+databases==0.9.0          # Capa de abstracción para bases de datos (SQLAlchemy core)
+sqlalchemy==2.0.31        # ORM potente, la versión 2.x está optimizada para async
+
+# --- VALIDACIÓN Y CONFIGURACIÓN ---
+pydantic==2.8.2
+python-dotenv==1.0.1      # Para cargar variables desde archivos .env
+python-decouple==3.8      # Alternativa potente para gestionar configuraciones
+cryptography==42.0.8      # Para necesidades de encriptación
+
+# --- LIBRERÍAS ADICIONALES PARA ESCALABILIDAD Y ROBUSTEZ ---
+
+# 1. Broker de Mensajes y Tareas en Segundo Plano (Celery + Redis)
+celery==5.4.0             # Sistema de colas de tareas distribuidas
+redis==5.0.7              # Cliente para Redis, usado como broker de Celery y caché
+
+# 2. Cliente MQTT Asíncrono para IoT
+fastapi-mqtt==2.2.0       # Integración sencilla de un cliente MQTT en FastAPI
+
+# 3. Límite de Tasa (Rate Limiting) para proteger la API
+slowapi==0.1.9            # Implementa un limitador de tasa para tus endpoints
+
+# Nota sobre psycopg2:
+# No se incluye psycopg2-binary por defecto, ya que asyncpg es el driver asíncrono principal
+# para PostgreSQL. Si alguna otra librería lo requiere como dependencia explícita, puedes añadir:
+# psycopg2-binary==2.9.9
