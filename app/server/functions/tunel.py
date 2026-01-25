@@ -336,7 +336,9 @@ def generar_filtros_por_mes(meses, fecha_inicial, fecha_final):
     return filtros
  
 
-async def Guardar_Datos_3(ztrack_data: Union[TunelSchema, dict]) -> str:
+#async def Guardar_Datos_3(ztrack_data: Union[TunelSchema, dict]) -> str:
+async def Guardar_Datos_3(ztrack_data) -> str:
+
     # 1) Asegurar dict
     if isinstance(ztrack_data, TunelSchema):
         ztrack_data = ztrack_data.model_dump()
