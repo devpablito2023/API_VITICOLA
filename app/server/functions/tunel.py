@@ -197,6 +197,10 @@ def procesar_texto(texto,palabras,data={}):
             if posicion != -1:
                 cadena_ok = encontrar_parte_en_texto(texto,palabras[index])
                 cadena_ok =cortar_texto_1B04(cadena_ok,"1B04FF") 
+                print("////////")
+                print(cadena_ok)
+                print("////////")
+
                 cadena_ok =cadena_ok[0]
                 if index== 0 :
                     data_json = procesar_trama(cadena_ok ,A_sensor_readout_dataset,A_sensor_divisor,A_sensor_caracter,data)
@@ -211,6 +215,7 @@ def procesar_texto(texto,palabras,data={}):
     return data_json
 def proceso_general_termo_king(data):
     total ={}
+    print(data)
     for key, value in data.items():
         if key.startswith("d") and key[1:].isdigit():
             print("jete")
@@ -975,6 +980,11 @@ def decision_datos_extunel(datos, rango_dias ,ultimo_guardado=None ):
                     "865691037001658" : 15785,
                     "868428040551750" : 15786,
                     "868428041677810" : 15806, #la joya USDAS
+                                                "18:FE:34:D8:B0:BC" : 4530, #1
+                    "48:55:19:DF:D7:7B" : 4531, #2
+                    "48:55:19:E0:29:A9" : 4532, #3
+                    "48:55:19:E0:58:98" : 4529, #5
+                    "84:F3:EB:83:43:84" : 4533, #4
 
                     "866782048661041": 15775         
                 }
@@ -1124,6 +1134,12 @@ def decision_datos(datos, rango_dias, ultimo_guardado=None):
         "866262035841310": 15857,
         "866262034780196": 15858,
         "867856037754477": 15859,
+
+        "18:FE:34:D8:B0:BC" : 4530, #1
+        "48:55:19:DF:D7:7B" : 4531, #2
+        "48:55:19:E0:29:A9" : 4532, #3
+        "48:55:19:E0:58:98" : 4529, #5
+        "84:F3:EB:83:43:84" : 4533, #4
 
         "866782048661041": 15775   
     }
