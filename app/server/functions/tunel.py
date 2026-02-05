@@ -213,6 +213,14 @@ def procesar_texto(texto,palabras,data={}):
             else :
                 data_json = procesar_trama("" ,[],[],[],data)
     return data_json
+
+def es_hexadecimal(texto: str) -> bool:
+    try:
+        int(texto, 16)
+        return True
+    except ValueError:
+        return False
+
 def proceso_general_termo_king(data):
     total ={}
     print(data)
@@ -220,8 +228,10 @@ def proceso_general_termo_king(data):
         if key.startswith("d") and key[1:].isdigit():
             print("jete")
             if value :
-                resultado_json = procesar_texto(value,palabras,total)
-                total =resultado_json
+                validacion_hexa = es_hexadecimal(value)
+                if validacion_hexa : 
+                    resultado_json = procesar_texto(value,palabras,total)
+                    total =resultado_json
         if key=="val" :
             print("****pasamos detectamos val **** ")
             if value :
